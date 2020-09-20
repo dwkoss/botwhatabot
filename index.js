@@ -5,16 +5,13 @@ const name = process.env.TWITTER_API_BEARER_SECRET_LOC;
 exports.run = async (req, res) => {
   const client = new SecretManagerServiceClient();
 
-  const [version] = await client.accessSecretVersion({
+  const [secret] = await client.getSecret({
     name: name,
   });
 
-  // Extract the payload as a string.
-  const payload = version.payload.data.toString();
+  const policy = secret.replication.replication;
 
-  // WARNING: Do not print the secret in a production environment - this
-  // snippet is showing how to access the secret material.
-  console.info(`Payload: ${typeof payload}`);
+  console.info(`Found secret ${secret.name} (${policy})`);
 
-  res.send(`we ran!, Payload: ${typeof payload}`);
+  res.send(`we ran!, Policy: ${typeof policy}`);
 };
