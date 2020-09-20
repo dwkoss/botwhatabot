@@ -6,12 +6,10 @@ exports.run = async (req, res) => {
   const client = new SecretManagerServiceClient();
 
   const [secret] = await client.getSecret({
-    name: name,
+    name: `${name}/versions/latest`,
   });
 
-  const policy = secret.replication.replication;
+  const payload = version.payload.data.toString();
 
-  console.info(`Found secret ${secret.name} (${policy})`);
-
-  res.send(`we ran!, Policy: ${typeof policy}`);
+  res.send(`we ran!, found a policy with a type: ${typeof payload}`);
 };
