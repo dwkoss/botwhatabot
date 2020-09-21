@@ -1,15 +1,30 @@
 const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
+const Twit = require('twit');
 
-const name = process.env.TWITTER_API_BEARER_SECRET_LOC;
+const twitterKeyLoc = process.env.TWITTER_API_KEY_LOC;
+const twitterSecretLoc = process.env.TWITTER_API_SECRET_LOC;
 
-exports.run = async (req, res) => {
-  const client = new SecretManagerServiceClient();
-
+const getFromSecretManager = async (client, name) => {
   const [version] = await client.accessSecretVersion({
     name: `${name}/versions/latest`,
   });
+  return version.payload.data.toString();
+};
 
-  const payload = version.payload.data.toString();
+exports.run = async (req, res) => {
+  const secretManagerClient = new SecretManagerServiceClient();
 
-  res.send(`we ran!, found a policy with a type: ${typeof payload}`);
+  const key = await getFromSecretManager(secretManagerClient, twitterKeyLoc);
+  const secret = await getFromSecretManager(twitterSecretLoc, twitterKeyLoc);
+
+  const twitClient = new Twit({
+    consumer_key: key,
+    consumer_secret: secret,
+    app_only_auth: true
+  });
+
+  twitClient.get('search/tweets', { q: 'trump', count: 100 }, function(err, data, response) {
+    console.log(data);
+    res.send(data);
+  });
 };
