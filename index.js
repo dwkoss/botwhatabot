@@ -15,7 +15,7 @@ exports.run = async (req, res) => {
   const secretManagerClient = new SecretManagerServiceClient();
 
   const key = await getFromSecretManager(secretManagerClient, twitterKeyLoc);
-  const secret = await getFromSecretManager(twitterSecretLoc, twitterKeyLoc);
+  const secret = await getFromSecretManager(secretManagerClient, twitterSecretLoc);
 
   const twitClient = new Twit({
     consumer_key: key,
