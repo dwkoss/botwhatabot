@@ -23,7 +23,7 @@ exports.run = async (req, res) => {
     app_only_auth: true
   });
 
-  twitClient.get('search/tweets', { q: 'trump "but what about"', count: 5 }, function(err, data, response) {
+  twitClient.get('search/tweets', { q: 'trump "but what about"', count: 5, tweet_mode: extended }, function(err, data, response) {
     console.log(data);
     res.send(data);
   });
