@@ -25,6 +25,6 @@ exports.run = async (req, res) => {
 
   twitClient.get('search/tweets', { q: 'trump "but what about"', count: 15, tweet_mode: "extended" }, function(err, data, response) {
     console.log(data);
-    res.send(data);
+    res.send('this is a test that the deploy worked');
   });
 };
