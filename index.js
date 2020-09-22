@@ -24,6 +24,6 @@ exports.run = async (req, res) => {
   });
 
   const twitResponse = await twitClient.get('search/tweets', { q: 'trump "but what about"', count: 15, tweet_mode: "extended" });
-  const fullTexts = twitResponse.data.statuses.map(status => status.fullText);
+  const fullTexts = twitResponse.data.statuses.map(status => status.full_text);
   res.send(fullTexts);
 };
