@@ -18,6 +18,8 @@ const searchForButWhatAboutTweets = async (client, extraText) => {
   const twitResponse = await client.get('search/tweets', {
     q: `${extraText} "but what about"`, count: 100, tweet_mode: 'extended', result_type: 'recent',
   });
+
+  // Remember that twitter search captures retweet text, so we have to actually check by hand.
   return twitResponse.data.statuses.map((status) => status.full_text).filter((text) => {
     const lowerCaseText = text.toLowerCase();
     return lowerCaseText.search('but what about') >= 0 && lowerCaseText.search(extraText);
@@ -35,6 +37,9 @@ const constructTweetText = (leftCollectionOfSplits, rightCollecitonOfSplits) => 
     .find((split) => split[0].length > 50 && split[0].length < 140);
   const rightText = rightCollecitonOfSplits
     .find((split) => split[1].length > 50 && split[1].length < 140);
+
+  console.log('leftText', leftText);
+  console.log('rightText', rightText);
 
   return leftText + rightText;
 };
@@ -64,7 +69,7 @@ exports.run = async (req, res) => {
 
   const tweetText = demFirst
     ? constructTweetText(splitDemText, splitRepubText)
-    : constructTweetText(splitRepubText, splitRepubText);
+    : constructTweetText(splitRepubText, splitDemText);
 
   res.send(tweetText);
 };
