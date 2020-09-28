@@ -38,10 +38,10 @@ const constructTweetText = (leftCollectionOfSplits, rightCollecitonOfSplits) => 
   const rightText = rightCollecitonOfSplits
     .find((split) => split[1].length > 50 && split[1].length < 140);
 
-  console.log('leftText', leftText);
-  console.log('rightText', rightText);
+  console.log('leftText', leftText[0]);
+  console.log('rightText', rightText[1]);
 
-  return leftText + rightText;
+  return leftText[0] + rightText[1];
 };
 
 exports.run = async (req, res) => {
