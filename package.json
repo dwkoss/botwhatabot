@@ -19,5 +19,10 @@
   "dependencies": {
     "@google-cloud/secret-manager": "^3.2.0",
     "twit": "^2.2.11"
+  },
+  "devDependencies": {
+    "eslint": "^7.9.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.0"
   }
 }
