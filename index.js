@@ -79,7 +79,7 @@ exports.run = async (req, res) => {
   const republicanTweets = await searchForButWhatAboutTweets(
     twitClient,
     randomRepublicanText,
-    demFirst,
+    !demFirst,
   );
 
   const splitDemText = democratTweets.map((tweet) => splitTextByButWhatAbout(tweet));
