@@ -21,17 +21,20 @@ const searchForButWhatAboutTweets = async (client, extraText, searchRightForExtr
   });
 
   // Remember that twitter search captures retweet text, so we have to actually check by hand.
-  return twitResponse.data.statuses.map((status) => status.full_text).filter((text) => {
-    const lowerCaseText = text.toLowerCase();
-    const butWhatAboutLoc = lowerCaseText.search('but what about');
-    const extraTextLoc = lowerCaseText.search(extraText);
+  return twitResponse.data.statuses
+    .filter((status) => !(status.truncated))
+    .map((status) => status.full_text)
+    .filter((text) => {
+      const lowerCaseText = text.toLowerCase();
+      const butWhatAboutLoc = lowerCaseText.search('but what about');
+      const extraTextLoc = lowerCaseText.search(extraText);
 
-    return butWhatAboutLoc >= 0
-      && extraTextLoc >= 0
-      && (searchRightForExtraText
-        ? extraTextLoc < butWhatAboutLoc
-        : butWhatAboutLoc < extraTextLoc);
-  });
+      return butWhatAboutLoc >= 0
+        && extraTextLoc >= 0
+        && (searchRightForExtraText
+          ? extraTextLoc < butWhatAboutLoc
+          : butWhatAboutLoc < extraTextLoc);
+    });
 };
 
 const splitTextByButWhatAbout = (tweet) => {
