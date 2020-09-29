@@ -92,5 +92,11 @@ exports.run = async (req, res) => {
     ? constructTweetText(splitDemText, splitRepubText)
     : constructTweetText(splitRepubText, splitDemText);
 
-  res.send(tweetText);
+  const tweetResponse = await twitClient.post('statuses/update', { status: tweetText });
+  console.log(tweetResponse);
+
+  res.send({
+    tweetText,
+    tweetResponse,
+  });
 };
