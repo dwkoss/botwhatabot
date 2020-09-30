@@ -52,11 +52,11 @@ const splitTextByButWhatAbout = (tweet) => {
 
 const constructTweetText = (leftCollectionOfSplits, rightCollecitonOfSplits) => {
   const leftText = leftCollectionOfSplits
-    .filter((split) => split[0].length > 50 && split[0].length < 140
-      && split[1].length > 50 && split[1].length < 140);
+    .filter((split) => split[0].length > 25 && split[0].length < 140
+      && split[1].length > 10 && split[1].length < 140);
   const rightText = rightCollecitonOfSplits
-    .filter((split) => split[1].length > 50 && split[1].length < 140
-      && split[1].length > 50 && split[1].length < 140);
+    .filter((split) => split[0].length > 10 && split[0].length < 140
+      && split[1].length > 25 && split[1].length < 140);
 
   leftText.forEach((textSplit) => {
     console.log('left text sample', textSplit[0]);
@@ -66,7 +66,7 @@ const constructTweetText = (leftCollectionOfSplits, rightCollecitonOfSplits) => 
   });
 
   console.log('number of lefts', leftCollectionOfSplits.length);
-  console.log('number of valid rights', rightCollecitonOfSplits.length);
+  console.log('number of rights', rightCollecitonOfSplits.length);
   console.log('number of valid lefts', leftText.length);
   console.log('number of valid rights', rightText.length);
   console.log('leftText', leftText[0][0]);
