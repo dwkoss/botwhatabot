@@ -67,7 +67,7 @@ exports.run = async (req, res) => {
   // to application/json, so we need to manually parse the request body
   if (req.header('content-type') === 'application/json') {
     console.log('request header content-type is application/json and auto parsing the req body as json');
-    parsedBody = req.body; 
+    parsedBody = req.body;
   } else {
     console.log('request header content-type is NOT application/json and MANUALLY parsing the req body as json');
     parsedBody = JSON.parse(req.body);
@@ -112,17 +112,17 @@ exports.run = async (req, res) => {
   const tweetText = demFirst
     ? constructTweetText(splitDemText, splitRepubText)
     : constructTweetText(splitRepubText, splitDemText);
-  if (parsedBody.executeTweet) {
+  if (parsedBody.noExecuteTweet) {
+    res.send({
+      tweetText,
+    });
+  } else {
     const tweetResponse = await twitClient.post('statuses/update', { status: tweetText });
     console.log(tweetResponse);
 
     res.send({
       tweetText,
       tweetResponse,
-    });
-  } else {
-    res.send({
-      tweetText,
     });
   }
 };
