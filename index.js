@@ -57,7 +57,8 @@ const constructTweetText = (leftCollectionOfSplits, rightCollecitonOfSplits) => 
   const rightText = rightCollecitonOfSplits
     .filter((split) => split[1].length > 50 && split[1].length < 140
       && split[1].length > 50 && split[1].length < 140);
-
+  console.log('number of lefts', leftCollectionOfSplits.length);
+  console.log('number of valid rights', rightCollecitonOfSplits.length);
   console.log('number of valid lefts', leftText.length);
   console.log('number of valid rights', rightText.length);
   console.log('leftText', leftText[0][0]);
