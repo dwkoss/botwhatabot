@@ -19,12 +19,12 @@ const republicanText = ['trump', 'republicans', 'republican'];
 /* searchRightForExtraText: false is left, true is right */
 const searchForButWhatAboutTweets = async (client, extraText, searchRightForExtraText) => {
   const twitResponse = await client.get('search/tweets', {
-    q: `${extraText} "but what about"`, count: 100, tweet_mode: 'extended', result_type: 'recent',
+    q: `${extraText} "but what about"`, count: 100, tweet_mode: 'extended', result_type: 'mixed',
   });
 
   // Remember that twitter search captures retweet text, so we have to actually check by hand.
   return twitResponse.data.statuses
-    .filter((status) => status.truncated === false)
+    .filter((status) => status.truncated === false && status.user.screen_name !== 'botwhatabot')
     .map((status) => {
       if (!status.retweeted_status) {
         return status.full_text;
