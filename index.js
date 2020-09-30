@@ -57,6 +57,14 @@ const constructTweetText = (leftCollectionOfSplits, rightCollecitonOfSplits) => 
   const rightText = rightCollecitonOfSplits
     .filter((split) => split[1].length > 50 && split[1].length < 140
       && split[1].length > 50 && split[1].length < 140);
+
+  leftText.forEach((textSplit) => {
+    console.log('left text sample', textSplit[0]);
+  });
+  rightText.forEach((textSplit) => {
+    console.log('right text sample', textSplit[1]);
+  });
+
   console.log('number of lefts', leftCollectionOfSplits.length);
   console.log('number of valid rights', rightCollecitonOfSplits.length);
   console.log('number of valid lefts', leftText.length);
@@ -93,6 +101,9 @@ exports.run = async (req, res) => {
 
   const randomDemocratText = democratText[Math.floor(Math.random() * democratText.length)];
   const randomRepublicanText = republicanText[Math.floor(Math.random() * republicanText.length)];
+
+  console.log('democrat text', randomDemocratText);
+  console.log('republican text', randomRepublicanText);
 
   const twitClient = new Twit({
     consumer_key: consumerKey,
