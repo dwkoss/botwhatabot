@@ -52,16 +52,18 @@ const splitTextByButWhatAbout = (tweet) => {
 
 const constructTweetText = (leftCollectionOfSplits, rightCollecitonOfSplits) => {
   const leftText = leftCollectionOfSplits
-    .find((split) => split[0].length > 50 && split[0].length < 140
+    .filter((split) => split[0].length > 50 && split[0].length < 140
       && split[1].length > 50 && split[1].length < 140);
   const rightText = rightCollecitonOfSplits
-    .find((split) => split[1].length > 50 && split[1].length < 140
+    .filter((split) => split[1].length > 50 && split[1].length < 140
       && split[1].length > 50 && split[1].length < 140);
 
-  console.log('leftText', leftText[0]);
-  console.log('rightText', rightText[1]);
+  console.log('number of valid lefts', leftText.length);
+  console.log('number of valid rights', rightText.length);
+  console.log('leftText', leftText[0][0]);
+  console.log('rightText', rightText[0][1]);
 
-  return leftText[0] + rightText[1];
+  return leftText[0][0] + rightText[0][1];
 };
 
 exports.run = async (req, res) => {
