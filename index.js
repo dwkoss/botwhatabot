@@ -3,6 +3,8 @@ const Twit = require('twit');
 
 const twitterKeyLoc = process.env.TWITTER_API_KEY_LOC;
 const twitterSecretLoc = process.env.TWITTER_API_SECRET_LOC;
+const twitterAccessTokenLoc = process.env.TWITTER_ACCESS_TOKEN_LOC;
+const twitterAccessTokenSecretLoc = process.env.TWITTER_ACCESS_TOKEN_SECRET_LOC;
 
 const getFromSecretManager = async (client, name) => {
   const [version] = await client.accessSecretVersion({
@@ -60,15 +62,21 @@ const constructTweetText = (leftCollectionOfSplits, rightCollecitonOfSplits) => 
 exports.run = async (req, res) => {
   const secretManagerClient = new SecretManagerServiceClient();
 
-  const key = await getFromSecretManager(secretManagerClient, twitterKeyLoc);
-  const secret = await getFromSecretManager(secretManagerClient, twitterSecretLoc);
+  const consumerKey = await getFromSecretManager(secretManagerClient, twitterKeyLoc);
+  const consumerSecret = await getFromSecretManager(secretManagerClient, twitterSecretLoc);
+  const accessToken = await getFromSecretManager(secretManagerClient, twitterAccessTokenLoc);
+  const accessTokenSecret = await getFromSecretManager(
+    secretManagerClient, twitterAccessTokenSecretLoc,
+  );
 
   const randomDemocratText = democratText[Math.floor(Math.random() * democratText.length)];
   const randomRepublicanText = republicanText[Math.floor(Math.random() * republicanText.length)];
 
   const twitClient = new Twit({
-    consumer_key: key,
-    consumer_secret: secret,
+    consumer_key: consumerKey,
+    consumer_secret: consumerSecret,
+    access_token: accessToken,
+    access_token_secret: accessTokenSecret,
   });
 
   const demFirst = Math.random() * 2 > 1;
