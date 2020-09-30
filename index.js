@@ -69,7 +69,6 @@ exports.run = async (req, res) => {
   const twitClient = new Twit({
     consumer_key: key,
     consumer_secret: secret,
-    app_only_auth: true,
   });
 
   const demFirst = Math.random() * 2 > 1;
