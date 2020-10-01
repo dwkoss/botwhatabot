@@ -13,8 +13,8 @@ const getFromSecretManager = async (client, name) => {
   return version.payload.data.toString();
 };
 
-const democratText = ['biden', 'democrats', 'dems', 'democrat'];
-const republicanText = ['trump', 'republicans', 'republican'];
+const democratText = ['biden', 'democrats', 'dems', 'democrat', 'obama'];
+const republicanText = ['trump', 'republicans', 'republican', '@POTUS'];
 
 /* searchRightForExtraText: false is left, true is right */
 const searchForButWhatAboutTweets = async (client, extraText, searchRightForExtraText) => {
@@ -47,11 +47,9 @@ const splitTextByButWhatAbout = (tweet) => {
 
 const constructTweetText = (leftCollectionOfSplits, rightCollecitonOfSplits) => {
   const leftText = leftCollectionOfSplits
-    .filter((split) => split[0].length > 25 && split[0].length < 140
-      && split[1].length > 10 && split[1].length < 140);
+    .filter((split) => split[0].length > 25 && split[0].length < 140);
   const rightText = rightCollecitonOfSplits
-    .filter((split) => split[0].length > 10 && split[0].length < 140
-      && split[1].length > 25 && split[1].length < 140);
+    .filter((split) => split[1].length > 25 && split[1].length < 140);
 
   leftCollectionOfSplits.forEach((textSplit) => {
     console.log('prechecked left  sample', textSplit[0]);
