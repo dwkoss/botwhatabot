@@ -24,13 +24,8 @@ const searchForButWhatAboutTweets = async (client, extraText, searchRightForExtr
 
   // Remember that twitter search captures retweet text, so we have to actually check by hand.
   return twitResponse.data.statuses
-    .filter((status) => status.truncated === false && status.user.screen_name !== 'botwotabot')
-    .map((status) => {
-      if (!status.retweeted_status) {
-        return status.full_text;
-      }
-      return status.retweeted_status.full_text;
-    })
+    .filter((status) => status.truncated === false && status.user.screen_name !== 'botwotabot' && !status.retweeted_status)
+    .map((status) => status.full_text)
     .filter((text) => {
       const lowerCaseText = text.toLowerCase();
       const butWhatAboutLoc = lowerCaseText.search('but what about');
