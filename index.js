@@ -73,7 +73,8 @@ const constructTweetText = (leftCollectionOfSplits, rightCollecitonOfSplits) => 
   console.log('leftText', leftText[0][0]);
   console.log('rightText', rightText[0][1]);
 
-  return leftText[0][0] + rightText[0][1];
+  return leftText[Math.floor(Math.random() * leftText.length)][0]
+    + rightText[Math.floor(Math.random() * rightText.length)][1];
 };
 
 exports.run = async (req, res) => {
