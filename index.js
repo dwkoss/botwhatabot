@@ -58,11 +58,17 @@ const constructTweetText = (leftCollectionOfSplits, rightCollecitonOfSplits) => 
     .filter((split) => split[0].length > 10 && split[0].length < 140
       && split[1].length > 25 && split[1].length < 140);
 
+  leftCollectionOfSplits.forEach((textSplit) => {
+    console.log('prechecked left  sample', textSplit[0]);
+  });
+  rightCollecitonOfSplits.forEach((textSplit) => {
+    console.log('prechecked right sample', textSplit[1]);
+  });
   leftText.forEach((textSplit) => {
-    console.log('left text sample', textSplit[0]);
+    console.log('valid left sample', textSplit[0]);
   });
   rightText.forEach((textSplit) => {
-    console.log('right text sample', textSplit[1]);
+    console.log('valid right sample', textSplit[1]);
   });
 
   console.log('number of lefts', leftCollectionOfSplits.length);
