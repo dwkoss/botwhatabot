@@ -24,7 +24,7 @@ const searchForButWhatAboutTweets = async (client, extraText, searchRightForExtr
 
   // Remember that twitter search captures retweet text, so we have to actually check by hand.
   return twitResponse.data.statuses
-    .filter((status) => status.truncated === false && status.user.screen_name !== 'botwhatabot')
+    .filter((status) => status.truncated === false && status.user.screen_name !== 'botwotabot')
     .map((status) => {
       if (!status.retweeted_status) {
         return status.full_text;
