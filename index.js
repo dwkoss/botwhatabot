@@ -18,7 +18,7 @@ const republicanSearchKeywords = ['trump', 'republicans', 'republican', '@POTUS'
 
 const searchForButWhatAboutTweets = async (client, orText) => {
   const twitResponse = await client.get('search/tweets', {
-    q: `"but what about" (${orText.join('OR')})`, count: 100, tweet_mode: 'extended', result_type: 'mixed',
+    q: `"but what about" (${orText.join(' OR ')})`, count: 100, tweet_mode: 'extended', result_type: 'mixed',
   });
   console.log('query is', `"but what about" (${orText.join('OR')}`);
 
