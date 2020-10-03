@@ -13,30 +13,20 @@ const getFromSecretManager = async (client, name) => {
   return version.payload.data.toString();
 };
 
-const democratText = ['biden', 'democrats', 'dems', 'democrat', 'obama'];
-const republicanText = ['trump', 'republicans', 'republican', '@POTUS'];
+const democratSearchKeywords = ['biden', 'democrats', 'dems', 'democrat', 'obama'];
+const republicanSearchKeywords = ['trump', 'republicans', 'republican', '@POTUS'];
 
-/* searchRightForExtraText: false is left, true is right */
-const searchForButWhatAboutTweets = async (client, extraText, searchRightForExtraText) => {
+const searchForButWhatAboutTweets = async (client, orText) => {
   const twitResponse = await client.get('search/tweets', {
-    q: `${extraText} "but what about"`, count: 100, tweet_mode: 'extended', result_type: 'mixed',
+    q: `"but what about" (${orText.join('OR')})`, count: 100, tweet_mode: 'extended', result_type: 'mixed',
   });
 
-  // Remember that twitter search captures retweet text, so we have to actually check by hand.
+  // Remember that twitter search captures retweet text, as well as your own text,
+  // so we have to filter that out.
   return twitResponse.data.statuses
     .filter((status) => status.truncated === false && status.user.screen_name !== 'botwotabot' && !status.retweeted_status)
     .map((status) => status.full_text)
-    .filter((text) => {
-      const lowerCaseText = text.toLowerCase();
-      const butWhatAboutLoc = lowerCaseText.search('but what about');
-      const extraTextLoc = lowerCaseText.search(extraText);
-
-      return butWhatAboutLoc >= 0
-        && extraTextLoc >= 0
-        && (searchRightForExtraText
-          ? extraTextLoc < butWhatAboutLoc
-          : butWhatAboutLoc < extraTextLoc);
-    });
+    .filter((text) => text.toLowerCase().search('but what about') >= 0);
 };
 
 const splitTextByButWhatAbout = (tweet) => {
@@ -45,35 +35,10 @@ const splitTextByButWhatAbout = (tweet) => {
   return [lowerCaseTweet.substring(0, butWhatAboutLoc), lowerCaseTweet.substring(butWhatAboutLoc)];
 };
 
-const constructTweetText = (leftCollectionOfSplits, rightCollecitonOfSplits) => {
-  const leftText = leftCollectionOfSplits
-    .filter((split) => split[0].length > 25 && split[0].length < 140);
-  const rightText = rightCollecitonOfSplits
-    .filter((split) => split[1].length > 25 && split[1].length < 140);
-
-  leftCollectionOfSplits.forEach((textSplit) => {
-    console.log('prechecked left  sample', textSplit[0]);
-  });
-  rightCollecitonOfSplits.forEach((textSplit) => {
-    console.log('prechecked right sample', textSplit[1]);
-  });
-  leftText.forEach((textSplit) => {
-    console.log('valid left sample', textSplit[0]);
-  });
-  rightText.forEach((textSplit) => {
-    console.log('valid right sample', textSplit[1]);
-  });
-
-  console.log('number of lefts', leftCollectionOfSplits.length);
-  console.log('number of rights', rightCollecitonOfSplits.length);
-  console.log('number of valid lefts', leftText.length);
-  console.log('number of valid rights', rightText.length);
-  console.log('leftText', leftText[0][0]);
-  console.log('rightText', rightText[0][1]);
-
-  return leftText[Math.floor(Math.random() * leftText.length)][0]
-    + rightText[Math.floor(Math.random() * rightText.length)][1];
-};
+const findValidText = (searchResultText, searchKeywords) => searchResultText
+  .filter((text) => text.length > 25 && text.length < 140)
+  // find first where the text has at least one search keyword
+  .find((text) => searchKeywords.find((searchKeyword) => text.search(searchKeyword) > -1));
 
 exports.run = async (req, res) => {
   let parsedBody;
@@ -99,12 +64,6 @@ exports.run = async (req, res) => {
     secretManagerClient, twitterAccessTokenSecretLoc,
   );
 
-  const randomDemocratText = democratText[Math.floor(Math.random() * democratText.length)];
-  const randomRepublicanText = republicanText[Math.floor(Math.random() * republicanText.length)];
-
-  console.log('democrat text', randomDemocratText);
-  console.log('republican text', randomRepublicanText);
-
   const twitClient = new Twit({
     consumer_key: consumerKey,
     consumer_secret: consumerSecret,
@@ -116,28 +75,33 @@ exports.run = async (req, res) => {
 
   const democratTweets = await searchForButWhatAboutTweets(
     twitClient,
-    randomDemocratText,
-    demFirst,
+    democratSearchKeywords,
   );
   const republicanTweets = await searchForButWhatAboutTweets(
     twitClient,
-    randomRepublicanText,
-    !demFirst,
+    republicanSearchKeywords,
   );
 
   const splitDemText = democratTweets.map((tweet) => splitTextByButWhatAbout(tweet));
   const splitRepubText = republicanTweets.map((tweet) => splitTextByButWhatAbout(tweet));
 
+  const firstDemText = findValidText((demFirst
+    ? splitDemText.map((split) => split[0])
+    : splitDemText.map((split) => split[1])), democratSearchKeywords);
+  const firstRepublicanText = findValidText(demFirst
+    ? splitRepubText.map((split) => split[1])
+    : splitRepubText.map((split) => split[0]), republicanSearchKeywords);
+
   const tweetText = demFirst
-    ? constructTweetText(splitDemText, splitRepubText)
-    : constructTweetText(splitRepubText, splitDemText);
+    ? firstDemText + firstRepublicanText
+    : firstRepublicanText + firstDemText;
+
   if (parsedBody.noExecuteTweet) {
     res.send({
       tweetText,
     });
   } else {
     const tweetResponse = await twitClient.post('statuses/update', { status: tweetText });
-    console.log(tweetResponse);
 
     res.send({
       tweetText,
