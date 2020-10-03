@@ -20,8 +20,11 @@ const searchForButWhatAboutTweets = async (client, orText) => {
   const twitResponse = await client.get('search/tweets', {
     q: `"but what about" (${orText.join('OR')})`, count: 100, tweet_mode: 'extended', result_type: 'mixed',
   });
+  console.log('query is', `"but what about" (${orText.join('OR')}`);
+
   console.log('statuses returned', twitResponse.data.statuses);
 
+  console.log('twitResponse', twitResponse);
   // Remember that twitter search captures retweet text, as well as your own text,
   // so we have to filter that out.
   return twitResponse.data.statuses
