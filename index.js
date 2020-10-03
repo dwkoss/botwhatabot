@@ -20,6 +20,7 @@ const searchForButWhatAboutTweets = async (client, orText) => {
   const twitResponse = await client.get('search/tweets', {
     q: `"but what about" (${orText.join('OR')})`, count: 100, tweet_mode: 'extended', result_type: 'mixed',
   });
+  console.log('statuses returned', twitResponse.data.statuses);
 
   // Remember that twitter search captures retweet text, as well as your own text,
   // so we have to filter that out.
@@ -72,7 +73,7 @@ exports.run = async (req, res) => {
   });
 
   const demFirst = Math.random() * 2 > 1;
-
+  console.log('dem text will be first', demFirst);
   const democratTweets = await searchForButWhatAboutTweets(
     twitClient,
     democratSearchKeywords,
@@ -82,9 +83,12 @@ exports.run = async (req, res) => {
     republicanSearchKeywords,
   );
 
+  console.log('number of democrat tweets returned', democratTweets);
+  console.log('number of republican tweets returned', republicanTweets);
+
   const splitDemText = democratTweets.map((tweet) => splitTextByButWhatAbout(tweet));
   const splitRepubText = republicanTweets.map((tweet) => splitTextByButWhatAbout(tweet));
-
+  
   const firstDemText = findValidText((demFirst
     ? splitDemText.map((split) => split[0])
     : splitDemText.map((split) => split[1])), democratSearchKeywords);
@@ -95,6 +99,8 @@ exports.run = async (req, res) => {
   const tweetText = demFirst
     ? firstDemText + firstRepublicanText
     : firstRepublicanText + firstDemText;
+
+  console.log('final tweet text', tweetText);
 
   if (parsedBody.noExecuteTweet) {
     res.send({
