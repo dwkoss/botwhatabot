@@ -18,7 +18,7 @@ const republicanSearchKeywords = ['trump', 'republicans', 'republican', '@POTUS'
 
 const getBotMostRecentTweetId = async (client) => {
   const botTweets = await client.get('search/tweets', { screen_name: 'botwotabot', count: 1 });
-  console.log('got bot tweets', botTweets);
+  console.log('got bot tweets: ', botTweets);
   console.log('most recent bot tweet is', botTweets.data.statuses[0].id);
   return botTweets.data.statuses[0].id;
 };
