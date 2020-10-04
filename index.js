@@ -18,12 +18,13 @@ const republicanSearchKeywords = ['trump', 'republicans', 'republican', '@POTUS'
 
 const getBotMostRecentTweetId = async (client) => {
   const botTweets = await client.get('statuses/user_timeline', { screen_name: 'botwotabot', count: 1 });
-  console.log('got bot tweets: ', botTweets);
+  // console.log('got bot tweets: ', botTweets);
   console.log('most recent bot tweet is', botTweets.data[0].id);
   return botTweets.data[0].id;
 };
 
 const searchForButWhatAboutTweets = async (client, sinceStatusId, orText) => {
+  console.log('this is the orText', orText);
   const twitResponse = await client.get('search/tweets', {
     q: `"but what about" (${orText.join(' OR ')})`, count: 100, tweet_mode: 'extended', result_type: 'mixed', since_id: sinceStatusId,
   });
