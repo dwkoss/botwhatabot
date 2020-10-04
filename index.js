@@ -23,7 +23,7 @@ const getBotMostRecentTweetId = async (client) => {
   return botTweets.data[0].id;
 };
 
-const searchForButWhatAboutTweets = async (client, orText, sinceStatusId) => {
+const searchForButWhatAboutTweets = async (client, sinceStatusId, orText) => {
   const twitResponse = await client.get('search/tweets', {
     q: `"but what about" (${orText.join(' OR ')})`, count: 100, tweet_mode: 'extended', result_type: 'mixed', since_id: sinceStatusId,
   });
