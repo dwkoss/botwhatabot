@@ -132,8 +132,7 @@ exports.run = async (req, res) => {
     res.send({
       tweetText: null,
     });
-  }
-  if (parsedBody.noExecuteTweet) {
+  } else if (parsedBody.noExecuteTweet) {
     res.send({
       tweetText,
     });
