@@ -52,6 +52,31 @@ const findValidText = (searchResultText, searchKeywords) => searchResultText
   // find first where the text has at least one search keyword
   .find((text) => searchKeywords.find((searchKeyword) => text.search(searchKeyword) > -1));
 
+const constructValidTweet = (democratTweets, republicanTweets, demFirst) => {
+  const splitDemText = democratTweets.map((tweet) => splitTextByButWhatAbout(tweet));
+  const splitRepubText = republicanTweets.map((tweet) => splitTextByButWhatAbout(tweet));
+
+  const firstDemText = findValidText((demFirst
+    ? splitDemText.map((split) => split[0])
+    : splitDemText.map((split) => split[1])), democratSearchKeywords);
+  const firstRepublicanText = findValidText(demFirst
+    ? splitRepubText.map((split) => split[1])
+    : splitRepubText.map((split) => split[0]), republicanSearchKeywords);
+
+  if (!firstDemText || !firstRepublicanText) {
+    console.log('unable to create a tweet because not enough valid data', firstDemText, firstRepublicanText);
+    return null;
+  }
+
+  const tweetText = demFirst
+    ? firstDemText + firstRepublicanText
+    : firstRepublicanText + firstDemText;
+
+  console.log('final tweet text', tweetText);
+
+  return tweetText;
+};
+
 exports.run = async (req, res) => {
   let parsedBody;
 
@@ -96,28 +121,18 @@ exports.run = async (req, res) => {
     republicanSearchKeywords,
   );
 
-  console.log('number of democrat tweets returned', democratTweets);
-  console.log('number of republican tweets returned', republicanTweets);
-
-  const splitDemText = democratTweets.map((tweet) => splitTextByButWhatAbout(tweet));
-  const splitRepubText = republicanTweets.map((tweet) => splitTextByButWhatAbout(tweet));
+  console.log('number of democrat tweets returned', democratTweets.length);
+  console.log('number of republican tweets returned', republicanTweets.length);
 
   const demFirst = Math.random() * 2 > 1;
-  console.log('dem text will be first', demFirst);
-
-  const firstDemText = findValidText((demFirst
-    ? splitDemText.map((split) => split[0])
-    : splitDemText.map((split) => split[1])), democratSearchKeywords);
-  const firstRepublicanText = findValidText(demFirst
-    ? splitRepubText.map((split) => split[1])
-    : splitRepubText.map((split) => split[0]), republicanSearchKeywords);
-
-  const tweetText = demFirst
-    ? firstDemText + firstRepublicanText
-    : firstRepublicanText + firstDemText;
-
-  console.log('final tweet text', tweetText);
-
+  const tweetText = constructValidTweet(democratTweets, republicanTweets, demFirst)
+    || constructValidTweet(democratTweets, republicanTweets, !demFirst);
+  if (!tweetText) {
+    console.log('no tweet was generated because there were not enough valid tweets');
+    res.send({
+      tweetText: null,
+    });
+  }
   if (parsedBody.noExecuteTweet) {
     res.send({
       tweetText,
