@@ -16,13 +16,19 @@ const getFromSecretManager = async (client, name) => {
 const democratSearchKeywords = ['biden', 'democrats', 'dems', 'democrat', 'obama'];
 const republicanSearchKeywords = ['trump', 'republicans', 'republican', '@POTUS'];
 
-const searchForButWhatAboutTweets = async (client, orText) => {
-  const twitResponse = await client.get('search/tweets', {
-    q: `"but what about" (${orText.join(' OR ')})`, count: 100, tweet_mode: 'extended', result_type: 'mixed',
-  });
-  console.log('query is', `"but what about" (${orText.join('OR')}`);
+const getBotMostRecentTweetId = async (client) => {
+  const botTweets = client.get('statuses/user_timeline', { screen_name: 'botwotabot', count: 1 });
+  console.log('most recent bot tweet is', botTweets.data.statuses[0].id);
+  return botTweets.data.statuses[0].id;
+};
 
-  console.log('statuses returned', twitResponse.data.statuses);
+const searchForButWhatAboutTweets = async (client, orText, sinceStatusId) => {
+  const twitResponse = await client.get('search/tweets', {
+    q: `"but what about" (${orText.join(' OR ')})`, count: 100, tweet_mode: 'extended', result_type: 'mixed', since_id: sinceStatusId,
+  });
+  console.log('query is', `"but what about" (${orText.join('OR')})`);
+
+  // console.log('statuses returned', twitResponse.data.statuses);
 
   console.log('twitResponse', twitResponse);
   // Remember that twitter search captures retweet text, as well as your own text,
@@ -75,14 +81,16 @@ exports.run = async (req, res) => {
     access_token_secret: accessTokenSecret,
   });
 
-  const demFirst = Math.random() * 2 > 1;
-  console.log('dem text will be first', demFirst);
+  const mostRecentBotTweetId = await getBotMostRecentTweetId(twitClient);
+
   const democratTweets = await searchForButWhatAboutTweets(
     twitClient,
+    mostRecentBotTweetId,
     democratSearchKeywords,
   );
   const republicanTweets = await searchForButWhatAboutTweets(
     twitClient,
+    mostRecentBotTweetId,
     republicanSearchKeywords,
   );
 
@@ -91,7 +99,10 @@ exports.run = async (req, res) => {
 
   const splitDemText = democratTweets.map((tweet) => splitTextByButWhatAbout(tweet));
   const splitRepubText = republicanTweets.map((tweet) => splitTextByButWhatAbout(tweet));
-  
+
+  const demFirst = Math.random() * 2 > 1;
+  console.log('dem text will be first', demFirst);
+
   const firstDemText = findValidText((demFirst
     ? splitDemText.map((split) => split[0])
     : splitDemText.map((split) => split[1])), democratSearchKeywords);
