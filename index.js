@@ -12,9 +12,9 @@ const getFromSecretManager = async (client, name) => {
   });
   return version.payload.data.toString();
 };
-
-const democratSearchKeywords = ['biden', 'democrats', 'dems', 'democrat', 'obama'];
-const republicanSearchKeywords = ['trump', 'republicans', 'republican', '@POTUS'];
+// `(${['trump', 'republicans', 'republican', '@POTUS', 'supremacists', 'conservatives', 'mcconnell', 'maga', 'pence'].join(' OR ')}) "but what about"`
+const democratSearchKeywords = ['biden', 'democrats', 'dems', 'democrat', 'obama', 'antifa', 'libs', 'liberals', 'clinton', 'pelosi', 'harris', 'blm'];
+const republicanSearchKeywords = ['trump', 'republicans', 'republican', '@POTUS', 'supremacists', 'conservatives', 'mcconnell', 'maga', 'pence'];
 
 const getBotMostRecentTweetId = async (client) => {
   const botTweets = await client.get('statuses/user_timeline', { screen_name: 'botwotabot', count: 1 });
