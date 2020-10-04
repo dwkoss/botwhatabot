@@ -20,7 +20,7 @@ const getBotMostRecentTweetId = async (client) => {
   const botTweets = await client.get('statuses/user_timeline', { screen_name: 'botwotabot', count: 1 });
   console.log('got bot tweets: ', botTweets);
   console.log('most recent bot tweet is', botTweets.data[0].id);
-  return botTweets.data.statuses[0].id;
+  return botTweets.data[0].id;
 };
 
 const searchForButWhatAboutTweets = async (client, orText, sinceStatusId) => {
