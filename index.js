@@ -13,8 +13,8 @@ const getFromSecretManager = async (client, name) => {
   return version.payload.data.toString();
 };
 // `(${['trump', 'republicans', 'republican', '@POTUS', 'supremacists', 'conservatives', 'mcconnell', 'maga', 'pence'].join(' OR ')}) "but what about"`
-const democratSearchKeywords = ['biden', 'democrats', 'dems', 'democrat', 'obama', 'antifa', 'libs', 'liberals', 'clinton', 'pelosi', 'harris', 'blm'];
-const republicanSearchKeywords = ['trump', 'republicans', 'republican', '@POTUS', 'supremacists', 'conservatives', 'mcconnell', 'maga', 'pence'];
+const democratSearchKeywords = ['biden', 'democrats', 'dems', 'democrat', 'obama', 'antifa', 'libs', 'liberals', 'clinton', 'pelosi', 'harris', 'blm', 'california', 'aoc', 'nyc', 'JoeBiden', 'dnc'];
+const republicanSearchKeywords = ['trump', 'republicans', 'republican', '@POTUS', 'supremacists', 'conservatives', 'mcconnell', 'maga', 'pence', 'texas', 'desantis', 'covid', 'COVID19', 'florida', 'deathsantis', 'rnc', 'maga', 'gop'];
 
 const getBotMostRecentTweetId = async (client) => {
   const botTweets = await client.get('statuses/user_timeline', { screen_name: 'botwotabot', count: 1 });
@@ -47,30 +47,40 @@ const splitTextByButWhatAbout = (tweet) => {
   return [lowerCaseTweet.substring(0, butWhatAboutLoc), lowerCaseTweet.substring(butWhatAboutLoc)];
 };
 
-const findValidText = (searchResultText, searchKeywords) => searchResultText
-  .filter((text) => text.length > 25 && text.length < 140)
+const findValidTextWithKeyword = (searchResultText, searchKeywords) => searchResultText
+  // removes text less than 25 chars in length, more than 125
+  .filter((text) => text.length > 25 && text.length < 125)
   // find first where the text has at least one search keyword
-  .find((text) => searchKeywords.find((searchKeyword) => text.search(searchKeyword) > -1));
+  .map((text) => ({
+    text,
+    keyword: searchKeywords.find((searchKeyword) => text.search(searchKeyword) > -1)
+  }))
+  // returns first where there's a matching keyword
+  .find((textAndKeyword) => textAndKeyword.keyword);
 
 const constructValidTweet = (democratTweets, republicanTweets, demFirst) => {
   const splitDemText = democratTweets.map((tweet) => splitTextByButWhatAbout(tweet));
   const splitRepubText = republicanTweets.map((tweet) => splitTextByButWhatAbout(tweet));
 
-  const firstDemText = findValidText((demFirst
+  const firstDemTextWithKeyword = findValidTextWithKeyword((demFirst
     ? splitDemText.map((split) => split[0])
     : splitDemText.map((split) => split[1])), democratSearchKeywords);
-  const firstRepublicanText = findValidText(demFirst
+  const firstRepublicanTextWithKeyword = findValidTextWithKeyword(demFirst
     ? splitRepubText.map((split) => split[1])
     : splitRepubText.map((split) => split[0]), republicanSearchKeywords);
 
-  if (!firstDemText || !firstRepublicanText) {
-    console.log('unable to create a tweet because not enough valid data', firstDemText, firstRepublicanText);
+  if (!firstDemTextWithKeyword || !firstRepublicanTextWithKeyword) {
+    console.log('unable to create a tweet because not enough valid data');
     return null;
   }
 
+  const staticHashTags = '#politics #vote';
+
+  const hashTags = `#${firstRepublicanTextWithKeyword.keyword} #${firstRepublicanTextWithKeyword.keyword} #politics #vote`;
+
   const tweetText = demFirst
-    ? firstDemText + firstRepublicanText
-    : firstRepublicanText + firstDemText;
+    ? firstDemTextWithKeyword.text + firstRepublicanTextWithKeyword.text + hashTags
+    : firstRepublicanTextWithKeyword.text + firstDemTextWithKeyword.text + hashTags;
 
   console.log('final tweet text', tweetText);
 
