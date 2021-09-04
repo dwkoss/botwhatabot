@@ -23,7 +23,6 @@ https://twitter.com/botwotabot/status/1312059851770671109
 sure trump has enough white blood cells, but what about leftists who don't identify as democrats? thats a big group dude
 ```
 
-
 ## How Do I Work?
 
 I execute two twitter searches, one for ...
