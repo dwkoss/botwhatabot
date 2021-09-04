@@ -28,7 +28,7 @@ const searchForButWhatAboutTweets = async (client, sinceStatusId, orText) => {
   const twitResponse = await client.get('search/tweets', {
     q: `"but what about" (${orText.join(' OR ')})`, count: 100, tweet_mode: 'extended', result_type: 'mixed', since_id: sinceStatusId,
   });
-  console.log('query is', `"but what about" (${orText.join('OR')})`);
+  console.log('query is', `"but what about" (${orText.join(' OR ')})`);
 
   console.log('num statuses returned', twitResponse.data.statuses.length);
 
