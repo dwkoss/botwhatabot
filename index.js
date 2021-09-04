@@ -73,10 +73,7 @@ const constructValidTweet = (democratTweets, republicanTweets, demFirst) => {
     console.log('unable to create a tweet because not enough valid data');
     return null;
   }
-
-  const staticHashTags = '#politics #vote';
-
-  const hashTags = `#${firstRepublicanTextWithKeyword.keyword} #${firstRepublicanTextWithKeyword.keyword} #politics #vote`;
+  const hashTags = `#${firstDemTextWithKeyword.keyword} #${firstRepublicanTextWithKeyword.keyword} #politics #vote`;
 
   const tweetText = demFirst
     ? firstDemTextWithKeyword.text + firstRepublicanTextWithKeyword.text + hashTags
