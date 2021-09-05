@@ -23,7 +23,7 @@ const getBotMostRecentTweetId = async (client) => {
   return botTweets.data[0].id;
 };
 
-const searchForButWhatAboutTweets = async (client, /*sinceStatusId,*/ orText) => {
+const searchForButWhatAboutTweets = async (client, sinceStatusId, orText) => {
   console.log('this is the orText', orText);
   const twitResponse = await client.get('search/tweets', {
     q: `"but what about" (${orText.join(' OR ')})`, count: 100, tweet_mode: 'extended', result_type: 'mixed', /*since_id: sinceStatusId,*/
@@ -48,12 +48,12 @@ const splitTextByButWhatAbout = (tweet) => {
 };
 
 const findValidTextWithKeyword = (searchResultText, searchKeywords) => searchResultText
-  // removes text less than 25 chars in length, more than 125
-  .filter((text) => text.length > 25 && text.length < 125)
+  // removes text less than 25 chars in length, more than 130
+  .filter((text) => text.length > 25 && text.length < 130)
   // find first where the text has at least one search keyword
   .map((text) => ({
     text,
-    keyword: searchKeywords.find((searchKeyword) => text.search(searchKeyword) > -1)
+    keyword: searchKeywords.find((searchKeyword) => text.search(searchKeyword) > -1),
   }))
   // returns first where there's a matching keyword
   .find((textAndKeyword) => textAndKeyword.keyword);
