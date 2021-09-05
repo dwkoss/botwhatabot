@@ -76,8 +76,8 @@ const constructValidTweet = (democratTweets, republicanTweets, demFirst) => {
   const hashTags = `#${firstDemTextWithKeyword.keyword} #${firstRepublicanTextWithKeyword.keyword} #politics #vote`;
 
   const tweetText = demFirst
-    ? firstDemTextWithKeyword.text + firstRepublicanTextWithKeyword.text + hashTags
-    : firstRepublicanTextWithKeyword.text + firstDemTextWithKeyword.text + hashTags;
+    ? `${firstDemTextWithKeyword.text} ${firstRepublicanTextWithKeyword.text} ${hashTags}`
+    : `${firstRepublicanTextWithKeyword.text} ${firstDemTextWithKeyword.text} ${hashTags}`
 
   console.log('final tweet text', tweetText);
 
@@ -115,7 +115,7 @@ exports.run = async (req, res) => {
     access_token_secret: accessTokenSecret,
   });
 
-  const mostRecentBotTweetId = await getBotMostRecentTweetId(twitClient);
+  // const mostRecentBotTweetId = await getBotMostRecentTweetId(twitClient);
 
   const democratTweets = await searchForButWhatAboutTweets(
     twitClient,
