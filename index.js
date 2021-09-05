@@ -144,11 +144,21 @@ exports.run = async (req, res) => {
       tweetText,
     });
   } else {
-    const tweetResponse = await twitClient.post('statuses/update', { status: tweetText });
+    let tweetResponse;
+    try {
+      tweetResponse = await twitClient.post('statuses/update', { status: tweetText });
 
-    res.send({
-      tweetText,
-      tweetResponse,
-    });
+      console.log ({
+        tweetText,
+        tweetResponse,
+      });
+
+      res.send({
+        tweetText,
+        tweetResponse,
+      });
+    } catch (e) {
+      console.log(e);
+    }
   }
 };
