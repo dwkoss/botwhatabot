@@ -122,12 +122,12 @@ exports.run = async (req, res) => {
 
   const democratTweets = await searchForButWhatAboutTweets(
     twitClient,
-    // mostRecentBotTweetId,
+    mostRecentBotTweetId,
     democratSearchKeywords,
   );
   const republicanTweets = await searchForButWhatAboutTweets(
     twitClient,
-    // mostRecentBotTweetId,
+    mostRecentBotTweetId,
     republicanSearchKeywords,
   );
 
