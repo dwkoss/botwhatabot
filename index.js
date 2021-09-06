@@ -73,29 +73,39 @@ const findValidStatusWithKeyword = (statuses, searchKeywords) => statuses
   // returns first where there's a matching keyword.
   // Previous .map will have keyword as undefined if none is found
   .find((textAndKeyword) => textAndKeyword.keyword);
-
+console.log('a');
 const constructValidTweet = (democratTweets, republicanTweets, demFirst) => {
   const splitDemStatuses = democratTweets.map((status) => splitTextByButWhatAbout(status));
   const splitRepubStatuses = republicanTweets.map((status) => splitTextByButWhatAbout(status));
+  console.log('b');
 
   const firstDemStatusWithKeyword = findValidStatusWithKeyword((demFirst
     ? splitDemStatuses.map((split) => split[0])
     : splitDemStatuses.map((split) => split[1])),
   democratSearchKeywords.sort(() => Math.random() - 0.5));
+  console.log('c');
 
   const firstRepublicanStatusWithKeyword = findValidStatusWithKeyword(demFirst
     ? splitRepubStatuses.map((split) => split[1])
     : splitRepubStatuses.map((split) => split[0]),
   republicanSearchKeywords.sort(() => Math.random() - 0.5));
 
+console.log('d');
+
   if (!firstDemStatusWithKeyword || !firstRepublicanStatusWithKeyword) {
     console.log('unable to create a tweet because not enough valid data');
     return null;
   }
+console.log('e');
+
   const hashTagsAndHandles = `#${firstDemStatusWithKeyword.keyword} #${firstRepublicanStatusWithKeyword.keyword} #politics #vote @${firstDemStatusWithKeyword.user.screen_name} @${firstRepublicanStatusWithKeyword.user.screen_name}`;
+
+console.log('f');
 
   console.log('user ', firstDemStatusWithKeyword.user);
   console.log('user ', firstRepublicanStatusWithKeyword.user);
+
+console.log('g');
 
   const tweetText = demFirst
     ? `${firstDemStatusWithKeyword.split_full_text} ${firstRepublicanStatusWithKeyword.split_full_text} ${hashTagsAndHandles}`
