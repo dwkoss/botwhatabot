@@ -92,14 +92,14 @@ const constructValidTweet = (democratTweets, republicanTweets, demFirst) => {
     console.log('unable to create a tweet because not enough valid data');
     return null;
   }
-  const hashTags = `#${firstDemStatusWithKeyword.keyword} #${firstRepublicanStatusWithKeyword.keyword} #politics #vote`;
+  const hashTagsAndHandles = `#${firstDemStatusWithKeyword.keyword} #${firstRepublicanStatusWithKeyword.keyword} #politics #vote @${firstDemStatusWithKeyword.user.screen_name} @${firstRepublicanStatusWithKeyword.user.screen_name}`;
 
   console.log('user ', firstDemStatusWithKeyword.user);
   console.log('user ', firstRepublicanStatusWithKeyword.user);
 
   const tweetText = demFirst
-    ? `${firstDemStatusWithKeyword.split_full_text} ${firstRepublicanStatusWithKeyword.split_full_text} ${hashTags}`
-    : `${firstRepublicanStatusWithKeyword.split_full_text} ${firstDemStatusWithKeyword.split_full_text} ${hashTags}`;
+    ? `${firstDemStatusWithKeyword.split_full_text} ${firstRepublicanStatusWithKeyword.split_full_text} ${hashTagsAndHandles}`
+    : `${firstRepublicanStatusWithKeyword.split_full_text} ${firstDemStatusWithKeyword.split_full_text} ${hashTagsAndHandles}`;
 
   console.log('final tweet text', tweetText);
 
@@ -168,16 +168,16 @@ exports.run = async (req, res) => {
   } else {
     let tweetResponse;
     try {
-      tweetResponse = await twitClient.post('statuses/update', { status: tweetText });
+      // tweetResponse = await twitClient.post('statuses/update', { status: tweetText });
 
       console.log ({
         tweetText,
-        tweetResponse,
+        // tweetResponse,
       });
 
       res.send({
         tweetText,
-        tweetResponse,
+        // tweetResponse,
       });
     } catch (e) {
       console.log(e);
