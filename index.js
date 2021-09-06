@@ -44,12 +44,14 @@ const searchForButWhatAboutTweets = async (client, sinceStatusId, orText) => {
 const splitTextByButWhatAbout = (tweet) => {
   const lowerCaseTweet = tweet.toLowerCase();
   const butWhatAboutLoc = lowerCaseTweet.search('but what about');
-  return [lowerCaseTweet.substring(0, butWhatAboutLoc), lowerCaseTweet.substring(butWhatAboutLoc)];
+  return [tweet.substring(0, butWhatAboutLoc), tweet.substring(butWhatAboutLoc)];
 };
 
 const findValidTextWithKeyword = (searchResultText, searchKeywords) => searchResultText
-  // removes text less than 25 chars in length, more than 130
-  .filter((text) => text.length > 25 && text.length < 130)
+  // removes text less than 25 chars in length, more than 115
+  // 25 min to have decent content
+  // 115 to account for added hashtags, 15 character min usernames
+  .filter((text) => text.length > 25 && text.length < 115)
   // find first where the text has at least one search keyword
   .map((text) => ({
     text,
