@@ -118,7 +118,7 @@ exports.run = async (req, res) => {
     access_token_secret: accessTokenSecret,
   });
 
-  // const mostRecentBotTweetId = await getBotMostRecentTweetId(twitClient);
+  const mostRecentBotTweetId = await getBotMostRecentTweetId(twitClient);
 
   const democratTweets = await searchForButWhatAboutTweets(
     twitClient,
