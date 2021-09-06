@@ -37,50 +37,69 @@ const searchForButWhatAboutTweets = async (client, sinceStatusId, orText) => {
   // so we have to filter that out.
   return twitResponse.data.statuses
     .filter((status) => status.truncated === false && status.user.screen_name !== 'botwotabot' && !status.retweeted_status)
-    .map((status) => status.full_text)
-    .filter((text) => text.toLowerCase().search('but what about') >= 0);
+    .map((status) => ({
+      full_text: status.full_text,
+      user: {
+        screen_name: status.user.screen_name,
+      },
+    }))
+    .filter((status) => status.full_text.toLowerCase().search('but what about') >= 0);
 };
 
-const splitTextByButWhatAbout = (tweet) => {
-  const lowerCaseTweet = tweet.toLowerCase();
+const splitTextByButWhatAbout = (status) => {
+  const lowerCaseTweet = status.full_text.toLowerCase();
   const butWhatAboutLoc = lowerCaseTweet.search('but what about');
-  return [lowerCaseTweet.substring(0, butWhatAboutLoc), lowerCaseTweet.substring(butWhatAboutLoc)];
+  return [{
+    user: status.user,
+    split_full_text: status.full_text.substring(0, butWhatAboutLoc),
+  }, {
+    user: status.user,
+    split_full_text: status.full_text.substring(0, butWhatAboutLoc),
+  }];
 };
 
-const findValidTextWithKeyword = (searchResultText, searchKeywords) => searchResultText
-  // removes text less than 25 chars in length, more than 130
-  .filter((text) => text.length > 25 && text.length < 130)
+const findValidStatusWithKeyword = (statuses, searchKeywords) => statuses
+  // removes text less than 25 chars in length, more than 115
+  // 25 min to have decent content
+  // 115 to account for added hashtags, 15 character min usernames
+  .filter((status) => status.full_text.length > 25 && status.full_text.length < 115)
   // find first where the text has at least one search keyword
-  .map((text) => ({
-    text,
-    keyword: searchKeywords.find((searchKeyword) => text.search(searchKeyword) > -1),
+  .map((status) => ({
+    ...status,
+    keyword: searchKeywords.find(
+      (searchKeyword) => status.split_full_text.search(searchKeyword) > -1
+    ),
   }))
-  // returns first where there's a matching keyword
+  // returns first where there's a matching keyword.
+  // Previous .map will have keyword as undefined if none is found
   .find((textAndKeyword) => textAndKeyword.keyword);
 
 const constructValidTweet = (democratTweets, republicanTweets, demFirst) => {
-  const splitDemText = democratTweets.map((tweet) => splitTextByButWhatAbout(tweet));
-  const splitRepubText = republicanTweets.map((tweet) => splitTextByButWhatAbout(tweet));
+  const splitDemStatuses = democratTweets.map((status) => splitTextByButWhatAbout(status));
+  const splitRepubStatuses = republicanTweets.map((status) => splitTextByButWhatAbout(status));
 
-  const firstDemTextWithKeyword = findValidTextWithKeyword((demFirst
-    ? splitDemText.map((split) => split[0])
-    : splitDemText.map((split) => split[1])),
+  const firstDemStatusWithKeyword = findValidStatusWithKeyword((demFirst
+    ? splitDemStatuses.map((split) => split[0])
+    : splitDemStatuses.map((split) => split[1])),
   democratSearchKeywords.sort(() => Math.random() - 0.5));
 
-  const firstRepublicanTextWithKeyword = findValidTextWithKeyword(demFirst
-    ? splitRepubText.map((split) => split[1])
-    : splitRepubText.map((split) => split[0]),
+  const firstRepublicanStatusWithKeyword = findValidStatusWithKeyword(demFirst
+    ? splitRepubStatuses.map((split) => split[1])
+    : splitRepubStatuses.map((split) => split[0]),
   republicanSearchKeywords.sort(() => Math.random() - 0.5));
 
-  if (!firstDemTextWithKeyword || !firstRepublicanTextWithKeyword) {
+  if (!firstDemStatusWithKeyword || !firstRepublicanStatusWithKeyword) {
     console.log('unable to create a tweet because not enough valid data');
     return null;
   }
-  const hashTags = `#${firstDemTextWithKeyword.keyword} #${firstRepublicanTextWithKeyword.keyword} #politics #vote`;
+  const hashTagsAndHandles = `#${firstDemStatusWithKeyword.keyword} #${firstRepublicanStatusWithKeyword.keyword} #politics #vote @${firstDemStatusWithKeyword.user.screen_name} @${firstRepublicanStatusWithKeyword.user.screen_name}`;
+
+  console.log('user ', firstDemStatusWithKeyword.user);
+  console.log('user ', firstRepublicanStatusWithKeyword.user);
 
   const tweetText = demFirst
-    ? `${firstDemTextWithKeyword.text} ${firstRepublicanTextWithKeyword.text} ${hashTags}`
-    : `${firstRepublicanTextWithKeyword.text} ${firstDemTextWithKeyword.text} ${hashTags}`
+    ? `${firstDemStatusWithKeyword.split_full_text} ${firstRepublicanStatusWithKeyword.split_full_text} ${hashTagsAndHandles}`
+    : `${firstRepublicanStatusWithKeyword.split_full_text} ${firstDemStatusWithKeyword.split_full_text} ${hashTagsAndHandles}`;
 
   console.log('final tweet text', tweetText);
 
@@ -149,16 +168,16 @@ exports.run = async (req, res) => {
   } else {
     let tweetResponse;
     try {
-      tweetResponse = await twitClient.post('statuses/update', { status: tweetText });
+      // tweetResponse = await twitClient.post('statuses/update', { status: tweetText });
 
       console.log ({
         tweetText,
-        tweetResponse,
+        // tweetResponse,
       });
 
       res.send({
         tweetText,
-        tweetResponse,
+        // tweetResponse,
       });
     } catch (e) {
       console.log(e);
