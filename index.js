@@ -26,7 +26,7 @@ const getBotMostRecentTweetId = async (client) => {
 const searchForButWhatAboutTweets = async (client, sinceStatusId, orText) => {
   console.log('this is the orText', orText);
   const twitResponse = await client.get('search/tweets', {
-    q: `"but what about" (${orText.join(' OR ')})`, count: 100, tweet_mode: 'extended', result_type: 'mixed', /*since_id: sinceStatusId,*/
+    q: `"but what about" (${orText.join(' OR ')})`, count: 100, tweet_mode: 'extended', result_type: 'mixed', since_id: sinceStatusId,
   });
   console.log('query is', `"but what about" (${orText.join(' OR ')})`);
 
