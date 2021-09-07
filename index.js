@@ -67,7 +67,7 @@ const findValidStatusWithKeyword = (statuses, searchKeywords) => statuses
   .map((status) => ({
     ...status,
     keyword: searchKeywords.find(
-      (searchKeyword) => status.split_full_text.search(searchKeyword) > -1,
+      (searchKeyword) => status.split_full_text.toLowerCase().search(searchKeyword) > -1,
     ),
   }))
   // returns first where there's a matching keyword.
