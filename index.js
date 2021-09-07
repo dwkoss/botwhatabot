@@ -84,6 +84,7 @@ const constructValidTweet = (democratTweets, republicanTweets, demFirst) => {
     : splitDemStatuses.map((split) => split[1])),
   democratSearchKeywords.sort(() => Math.random() - 0.5));
   console.log('c');
+  console.log(firstDemStatusWithKeyword);
 
   const firstRepublicanStatusWithKeyword = findValidStatusWithKeyword(demFirst
     ? splitRepubStatuses.map((split) => split[1])
@@ -91,7 +92,7 @@ const constructValidTweet = (democratTweets, republicanTweets, demFirst) => {
   republicanSearchKeywords.sort(() => Math.random() - 0.5));
 
 console.log('d');
-
+console.log(firstRepublicanStatusWithKeyword);
   if (!firstDemStatusWithKeyword || !firstRepublicanStatusWithKeyword) {
     console.log('unable to create a tweet because not enough valid data');
     return null;
@@ -106,6 +107,9 @@ console.log('f');
   console.log('user ', firstRepublicanStatusWithKeyword.user);
 
 console.log('g');
+
+console.log('republican: ', firstRepublicanStatusWithKeyword.split_full_text);
+console.log('dem       : ', firstDemStatusWithKeyword.split_full_text);
 
   const tweetText = demFirst
     ? `${firstDemStatusWithKeyword.split_full_text} ${firstRepublicanStatusWithKeyword.split_full_text} ${hashTagsAndHandles}`
