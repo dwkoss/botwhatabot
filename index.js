@@ -62,7 +62,7 @@ const findValidStatusWithKeyword = (statuses, searchKeywords) => statuses
   // removes text less than 25 chars in length, more than 115
   // 25 min to have decent content
   // 115 to account for added hashtags, 15 character min usernames
-  .filter((status) => status.split_full_text.length > 25 && status.full_text.length < 115)
+  .filter((status) => status.split_full_text.length > 25 && status.split_full_text.length < 115)
   // find first where the text has at least one search keyword
   .map((status) => ({
     ...status,
