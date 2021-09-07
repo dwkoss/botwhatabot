@@ -72,7 +72,10 @@ const findValidStatusWithKeyword = (statuses, searchKeywords) => statuses
   }))
   // returns first where there's a matching keyword.
   // Previous .map will have keyword as undefined if none is found
-  .find((textAndKeyword) => textAndKeyword.keyword);
+  .find((statusAndKeyword) => {
+    console.log(statusAndKeyword);
+    return statusAndKeyword.keyword;
+  });
 console.log('a');
 const constructValidTweet = (democratTweets, republicanTweets, demFirst) => {
   const splitDemStatuses = democratTweets.map((status) => splitTextByButWhatAbout(status));
