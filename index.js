@@ -170,8 +170,8 @@ exports.run = async (req, res) => {
   console.log('number of democrat tweets returned', democratTweets.length);
   console.log('number of republican tweets returned', republicanTweets.length);
 
-  console.log('democrat tweets', democratTweets);
-  console.log('republican tweets', republicanTweets);
+  // console.log('democrat tweets', democratTweets);
+  // console.log('republican tweets', republicanTweets);
 
   const demFirst = Math.random() * 2 > 1;
   const tweetText = constructValidTweet(democratTweets, republicanTweets, demFirst)
@@ -188,7 +188,7 @@ exports.run = async (req, res) => {
   } else {
     let tweetResponse;
     try {
-      // tweetResponse = await twitClient.post('statuses/update', { status: tweetText });
+      tweetResponse = await twitClient.post('statuses/update', { status: tweetText });
 
       console.log ({
         tweetText,
