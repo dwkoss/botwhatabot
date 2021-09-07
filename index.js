@@ -192,12 +192,12 @@ exports.run = async (req, res) => {
 
       console.log ({
         tweetText,
-        // tweetResponse,
+        tweetResponse,
       });
 
       res.send({
         tweetText,
-        // tweetResponse,
+        tweetResponse,
       });
     } catch (e) {
       console.log(e);
