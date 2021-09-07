@@ -115,8 +115,8 @@ console.log('republican: ', firstRepublicanStatusWithKeyword.split_full_text);
 console.log('dem       : ', firstDemStatusWithKeyword.split_full_text);
 
   const tweetText = demFirst
-    ? `${firstDemStatusWithKeyword.split_full_text} ${firstRepublicanStatusWithKeyword.split_full_text} ${hashTagsAndHandles}`
-    : `${firstRepublicanStatusWithKeyword.split_full_text} ${firstDemStatusWithKeyword.split_full_text} ${hashTagsAndHandles}`;
+    ? `${firstDemStatusWithKeyword.split_full_text}${firstRepublicanStatusWithKeyword.split_full_text} ${hashTagsAndHandles}`
+    : `${firstRepublicanStatusWithKeyword.split_full_text}${firstDemStatusWithKeyword.split_full_text} ${hashTagsAndHandles}`;
 
   console.log('final tweet text', tweetText);
 
