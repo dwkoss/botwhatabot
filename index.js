@@ -54,7 +54,7 @@ const splitTextByButWhatAbout = (status) => {
     split_full_text: status.full_text.substring(0, butWhatAboutLoc),
   }, {
     user: status.user,
-    split_full_text: status.full_text.substring(0, butWhatAboutLoc),
+    split_full_text: status.full_text.substring(butWhatAboutLoc),
   }];
 };
 
@@ -73,7 +73,7 @@ const findValidStatusWithKeyword = (statuses, searchKeywords) => statuses
   // returns first where there's a matching keyword.
   // Previous .map will have keyword as undefined if none is found
   .find((statusAndKeyword) => {
-    console.log(statusAndKeyword);
+    // console.log(statusAndKeyword);
     return statusAndKeyword.keyword;
   });
 console.log('a');
